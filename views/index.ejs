@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+      body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  color: #333;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 16px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-top: 8px;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li button {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+/* Add the following styles at the end of the file */
+
+.update-button,
+.cancel-button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  margin-left: 8px;
+  cursor: pointer;
+  display: none; /* Hide initially */
+}
+
+.cancel-button {
+  background-color: #e74c3c;
+}
+
+  </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <form action="/add" method="post">
+      <input type="text" name="todo" required>
+      <button type="submit">Add Todo</button>
+    </form>
+    <ul>
+      <% todos.forEach(todo => { %>
+        <li>
+          <% if (!todo.editMode) { %>
+            <%= todo.todo %>
+            <form action="/delete/<%= todo.id %>" method="post" style="display:inline;">
+              <button type="submit" class="delete-button">Delete</button>
+            </form>
+            <button class="edit-button" onclick="toggleEditMode('<%= todo.id %>')">Edit</button>
+          <% } else { %>
+            <form action="/update/<%= todo.id %>" method="post" style="display:inline;">
+              <input type="text" name="updatedTodo" value="<%= todo.todo %>" required>
+              <button type="submit" class="update-button">Update</button>
+            </form>
+            <button class="cancel-button" onclick="toggleEditMode('<%= todo.id %>')">Cancel</button>
+          <% } %>
+        </li>
+      <% }); %>
+    </ul>
+  
+    <script>
+      function toggleEditMode(todoId) {
+        const editButton = document.querySelector(`.edit-button[data-id="${todoId}"]`);
+        editButton.innerText = editButton.innerText === 'Edit' ? 'Cancel' : 'Edit';
+  
+        const updateButton = document.querySelector(`.update-button[data-id="${todoId}"]`);
+        updateButton.style.display = updateButton.style.display === 'none' ? 'inline' : 'none';
+  
+        const cancelBtn = document.querySelector(`.cancel-button[data-id="${todoId}"]`);
+        cancelBtn.style.display = cancelBtn.style.display === 'none' ? 'inline' : 'none';
+      }
+    </script>
+  </body>
+  </html>
